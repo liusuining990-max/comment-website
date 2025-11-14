@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Comment Community</title>
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #6b8cbc;
+            --background-color: #f5f7fa;
+            --card-color: #ffffff;
+            --text-color: #333333;
+            --border-color: #e1e4e8;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 0;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .comment-form {
+            background-color: var(--card-color);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .comments-section {
+            background-color: var(--card-color);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .comments-header {
+            padding: 15px 20px;
+            background-color: var(--secondary-color);
+            color: white;
+            font-weight: 500;
+        }
+
+        .comments-list {
+            padding: 20px;
+        }
+
+        .comment {
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .comment:last-child {
+            border-bottom: none;
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .comment-author {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .comment-time {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .comment-content {
+            margin-bottom: 10px;
+        }
+
+        .comment-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            background-color: var(--background-color);
+        }
+
+        .like-btn.active {
+            color: var(--success-color);
+        }
+
+        .dislike-btn.active {
+            color: var(--danger-color);
+        }
+
+        .reply-btn {
+            color: var(--primary-color);
+        }
+
+        .replies {
+            margin-top: 15px;
+            padding-left: 20px;
+            border-left: 2px solid var(--border-color);
+        }
+
+        .reply-form {
+            margin-top: 10px;
+            display: none;
+        }
+
+        .reply-form.active {
+            display: block;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background-color: var(--success-color);
+            color: white;
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            display: none;
+            z-index: 1000;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .comment-header {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">Interactive Comment Community</div>
+            <div class="user-info">
+                <div class="avatar" id="userAvatar">U</div>
+                <span id="username">Guest</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="comment-form">
+            <h2>Post a Comment</h2>
+            <div class="form-group">
+                <label for="usernameInput">Username</label>
+                <input type="text" id="usernameInput" placeholder="Enter your username">
+            </div>
+            <div class="form-group">
+                <label for="commentInput">Comment</label>
+                <textarea id="commentInput" placeholder="Enter your comment..."></textarea>
+            </div>
+            <button id="submitComment">Post Comment</button>
+        </div>
+
+        <div class="comments-section">
+            <div class="comments-header">
+                <span>All Comments</span>
+                <span id="commentsCount">0</span>
+            </div>
+            <div class="comments-list" id="commentsList">
+                <!-- Comments will be dynamically added here -->
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification">
+        Comment posted successfully!
+    </div>
+
+    <script>
+        // Sample initial comment data
+        let comments = [
+            {
+                id: 1,
+                author: "John",
+                content: "This website design is really nice, clean and intuitive!",
+                timestamp: new Date('2023-10-15T14:30:00'),
+                likes: 5,
+                dislikes: 1,
+                replies: [
+                    {
+                        id: 101,
+                        author: "Sarah",
+                        content: "I agree, the user experience is great!",
+                        timestamp: new Date('2023-10-15T15:00:00')
+                    }
+                ]
+            },
+            {
+                id: 2,
+                author: "TechEnthusiast",
+                content: "Hope to see more features in the future, like image upload and @mention functionality.",
+                timestamp: new Date('2023-10-16T09:15:00'),
+                likes: 3,
+                dislikes: 0,
+                replies: []
+            }
+        ];
+
+        // DOM elements
+        const commentsList = document.getElementById('commentsList');
+        const commentsCount = document.getElementById('commentsCount');
+        const usernameInput = document.getElementById('usernameInput');
+        const commentInput = document.getElementById('commentInput');
+        const submitComment = document.getElementById('submitComment');
+        const userAvatar = document.getElementById('userAvatar');
+        const usernameDisplay = document.getElementById('username');
+        const notification = document.getElementById('notification');
+
+        // Initialize page
+        function initPage() {
+            renderComments();
+            updateCommentsCount();
+            
+            // Load username from localStorage
+            const savedUsername = localStorage.getItem('username');
+            if (savedUsername) {
+                usernameInput.value = savedUsername;
+                updateUserInfo(savedUsername);
+            }
+        }
+
+        // Render comments list
+        function renderComments() {
+            commentsList.innerHTML = '';
+            
+            // Sort comments by time (newest first)
+            const sortedComments = [...comments].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            
+            sortedComments.forEach(comment => {
+                const commentElement = createCommentElement(comment);
+                commentsList.appendChild(commentElement);
+            });
+        }
+
+        // Create comment element
+        function createCommentElement(comment) {
+            const commentDiv = document.createElement('div');
+            commentDiv.className = 'comment';
+            commentDiv.dataset.id = comment.id;
+            
+            // Format time
+            const formattedTime = formatTime(comment.timestamp);
+            
+            commentDiv.innerHTML = `
+                <div class="comment-header">
+                    <span class="comment-author">${comment.author}</span>
+                    <span class="comment-time">${formattedTime}</span>
+                </div>
+                <div class="comment-content">${comment.content}</div>
+                <div class="comment-actions">
+                    <button class="action-btn like-btn ${comment.liked ? 'active' : ''}" data-id="${comment.id}">
+                        <span>👍</span> <span class="like-count">${comment.likes}</span>
+                    </button>
+                    <button class="action-btn dislike-btn ${comment.disliked ? 'active' : ''}" data-id="${comment.id}">
+                        <span>👎</span> <span class="dislike-count">${comment.dislikes}</span>
+                    </button>
+                    <button class="action-btn reply-btn" data-id="${comment.id}">
+                        Reply
+                    </button>
+                </div>
+                <div class="replies">
+                    ${comment.replies.map(reply => createReplyElement(reply)).join('')}
+                </div>
+                <div class="reply-form" id="reply-form-${comment.id}">
+                    <div class="form-group">
+                        <input type="text" class="reply-username" placeholder="Your username" value="${usernameInput.value}">
+                    </div>
+                    <div class="form-group">
+                        <textarea class="reply-content" placeholder="Reply content..."></textarea>
+                    </div>
+                    <button class="submit-reply" data-id="${comment.id}">Submit Reply</button>
+                </div>
+            `;
+            
+            // Add event listeners
+            const likeBtn = commentDiv.querySelector('.like-btn');
+            const dislikeBtn = commentDiv.querySelector('.dislike-btn');
+            const replyBtn = commentDiv.querySelector('.reply-btn');
+            const submitReplyBtn = commentDiv.querySelector('.submit-reply');
+            
+            likeBtn.addEventListener('click', () => handleLike(comment.id));
+            dislikeBtn.addEventListener('click', () => handleDislike(comment.id));
+            replyBtn.addEventListener('click', () => toggleReplyForm(comment.id));
+            submitReplyBtn.addEventListener('click', () => handleReply(comment.id));
+            
+            return commentDiv;
+        }
+
+        // Create reply element
+        function createReplyElement(reply) {
+            const formattedTime = formatTime(reply.timestamp);
+            
+            return `
+                <div class="comment reply">
+                    <div class="comment-header">
+                        <span class="comment-author">${reply.author}</span>
+                        <span class="comment-time">${formattedTime}</span>
+                    </div>
+                    <div class="comment-content">${reply.content}</div>
+                </div>
+            `;
+        }
+
+        // Format time
+        function formatTime(timestamp) {
+            const now = new Date();
+            const commentTime = new Date(timestamp);
+            const diffInSeconds = Math.floor((now - commentTime) / 1000);
+            
+            if (diffInSeconds < 60) {
+                return 'Just now';
+            } else if (diffInSeconds < 3600) {
+                return `${Math.floor(diffInSeconds / 60)} minutes ago`;
+            } else if (diffInSeconds < 86400) {
+                return `${Math.floor(diffInSeconds / 3600)} hours ago`;
+            } else {
+                return commentTime.toLocaleDateString();
+            }
+        }
+
+        // Update comments count
+        function updateCommentsCount() {
+            const totalComments = comments.reduce((total, comment) => total + 1 + comment.replies.length, 0);
+            commentsCount.textContent = totalComments;
+        }
+
+        // Update user info
+        function updateUserInfo(username) {
+            usernameDisplay.textContent = username;
+            userAvatar.textContent = username.charAt(0).toUpperCase();
+            
+            // Save to localStorage
+            localStorage.setItem('username', username);
+        }
+
+        // Handle like
+        function handleLike(commentId) {
+            const comment = comments.find(c => c.id === commentId);
+            if (comment) {
+                // Simple implementation - in real app would need user verification
+                comment.likes++;
+                renderComments();
+            }
+        }
+
+        // Handle dislike
+        function handleDislike(commentId) {
+            const comment = comments.find(c => c.id === commentId);
+            if (comment) {
+                // Simple implementation - in real app would need user verification
+                comment.dislikes++;
+                renderComments();
+            }
+        }
+
+        // Toggle reply form visibility
+        function toggleReplyForm(commentId) {
+            const replyForm = document.getElementById(`reply-form-${commentId}`);
+            replyForm.classList.toggle('active');
+        }
+
+        // Handle reply
+        function handleReply(commentId) {
+            const comment = comments.find(c => c.id === commentId);
+            const replyForm = document.getElementById(`reply-form-${commentId}`);
+            const usernameInput = replyForm.querySelector('.reply-username');
+            const contentInput = replyForm.querySelector('.reply-content');
+            
+            const username = usernameInput.value.trim();
+            const content = contentInput.value.trim();
+            
+            if (!username) {
+                alert('Please enter your username');
+                return;
+            }
+            
+            if (!content) {
+                alert('Please enter reply content');
+                return;
+            }
+            
+            // Add reply
+            const newReply = {
+                id: Date.now(),
+                author: username,
+                content: content,
+                timestamp: new Date()
+            };
+            
+            comment.replies.push(newReply);
+            
+            // Update user info
+            updateUserInfo(username);
+            
+            // Clear form
+            contentInput.value = '';
+            replyForm.classList.remove('active');
+            
+            // Re-render comments
+            renderComments();
+            updateCommentsCount();
+            
+            // Show notification
+            showNotification('Reply posted successfully!');
+        }
+
+        // Show notification
+        function showNotification(message) {
+            notification.textContent = message;
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
+        // Submit new comment
+        submitComment.addEventListener('click', () => {
+            const username = usernameInput.value.trim();
+            const content = commentInput.value.trim();
+            
+            if (!username) {
+                alert('Please enter your username');
+                return;
+            }
+            
+            if (!content) {
+                alert('Please enter comment content');
+                return;
+            }
+            
+            // Add new comment
+            const newComment = {
+                id: Date.now(),
+                author: username,
+                content: content,
+                timestamp: new Date(),
+                likes: 0,
+                dislikes: 0,
+                replies: []
+            };
+            
+            comments.push(newComment);
+            
+            // Update user info
+            updateUserInfo(username);
+            
+            // Clear comment input
+            commentInput.value = '';
+            
+            // Re-render comments
+            renderComments();
+            updateCommentsCount();
+            
+            // Show notification
+            showNotification('Comment posted successfully!');
+        });
+
+        // Initialize page
+        initPage();
+    </script>
+</body>
+</html>
