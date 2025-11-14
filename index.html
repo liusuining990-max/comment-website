@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interactive Comment Community</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary-color: #4a6fa5;
@@ -14,6 +15,7 @@
             --border-color: #e1e4e8;
             --success-color: #28a745;
             --danger-color: #dc3545;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         * {
@@ -27,6 +29,7 @@
             background-color: var(--background-color);
             color: var(--text-color);
             line-height: 1.6;
+            padding-bottom: 40px;
         }
 
         .container {
@@ -36,12 +39,11 @@
         }
 
         header {
-            background-color: var(--primary-color);
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             color: white;
-            padding: 15px 0;
+            padding: 20px 0;
             margin-bottom: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--shadow);
         }
 
         .header-content {
@@ -54,14 +56,24 @@
         }
 
         .logo {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            font-size: 32px;
         }
 
         .user-info {
             display: flex;
             align-items: center;
             gap: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
         }
 
         .avatar {
@@ -78,71 +90,92 @@
 
         .comment-form {
             background-color: var(--card-color);
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
             margin-bottom: 30px;
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         label {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
             font-weight: 500;
+            color: var(--primary-color);
         }
 
         input, textarea {
             width: 100%;
-            padding: 10px;
+            padding: 12px 15px;
             border: 1px solid var(--border-color);
-            border-radius: 4px;
+            border-radius: 8px;
             font-size: 16px;
+            transition: border 0.3s;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.2);
         }
 
         textarea {
-            min-height: 100px;
+            min-height: 120px;
             resize: vertical;
         }
 
         button {
-            background-color: var(--primary-color);
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
+            padding: 12px 25px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 16px;
-            transition: background-color 0.3s;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         button:hover {
-            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
         .comments-section {
             background-color: var(--card-color);
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
+            box-shadow: var(--shadow);
             overflow: hidden;
         }
 
         .comments-header {
-            padding: 15px 20px;
-            background-color: var(--secondary-color);
+            padding: 18px 25px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             color: white;
-            font-weight: 500;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .comments-list {
-            padding: 20px;
+            padding: 25px;
         }
 
         .comment {
-            padding: 15px 0;
+            padding: 20px 0;
             border-bottom: 1px solid var(--border-color);
+            transition: background-color 0.2s;
+        }
+
+        .comment:hover {
+            background-color: rgba(245, 247, 250, 0.5);
         }
 
         .comment:last-child {
@@ -152,12 +185,15 @@
         .comment-header {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
 
         .comment-author {
             font-weight: bold;
             color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .comment-time {
@@ -166,12 +202,13 @@
         }
 
         .comment-content {
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            line-height: 1.7;
         }
 
         .comment-actions {
             display: flex;
-            gap: 15px;
+            gap: 20px;
         }
 
         .action-btn {
@@ -182,14 +219,15 @@
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 5px;
-            padding: 5px;
-            border-radius: 4px;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 6px;
             transition: all 0.2s;
         }
 
         .action-btn:hover {
             background-color: var(--background-color);
+            transform: translateY(-1px);
         }
 
         .like-btn.active {
@@ -205,46 +243,100 @@
         }
 
         .replies {
-            margin-top: 15px;
-            padding-left: 20px;
-            border-left: 2px solid var(--border-color);
+            margin-top: 20px;
+            padding-left: 25px;
+            border-left: 3px solid var(--border-color);
         }
 
         .reply-form {
-            margin-top: 10px;
+            margin-top: 15px;
             display: none;
         }
 
         .reply-form.active {
             display: block;
+            animation: fadeIn 0.3s ease;
         }
 
         .notification {
             position: fixed;
             top: 20px;
             right: 20px;
-            padding: 15px 20px;
+            padding: 15px 25px;
             background-color: var(--success-color);
             color: white;
-            border-radius: 4px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             display: none;
             z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .github-info {
+            background-color: var(--card-color);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            margin-top: 30px;
+        }
+
+        .github-info h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .github-info ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .github-info li {
+            margin-bottom: 8px;
+        }
+
+        .url-box {
+            background-color: var(--background-color);
+            padding: 12px 15px;
+            border-radius: 6px;
+            font-family: monospace;
+            margin-top: 10px;
+            border: 1px dashed var(--border-color);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
 
         @media (max-width: 600px) {
             .container {
-                padding: 10px;
+                padding: 15px;
             }
             
             .header-content {
                 flex-direction: column;
-                gap: 10px;
+                gap: 15px;
             }
             
             .comment-header {
                 flex-direction: column;
                 gap: 5px;
+            }
+            
+            .comment-actions {
+                gap: 10px;
+            }
+            
+            .replies {
+                padding-left: 15px;
             }
         }
     </style>
@@ -252,7 +344,10 @@
 <body>
     <header>
         <div class="header-content">
-            <div class="logo">Interactive Comment Community</div>
+            <div class="logo">
+                <i class="fas fa-comments"></i>
+                <span>Interactive Comment Community</span>
+            </div>
             <div class="user-info">
                 <div class="avatar" id="userAvatar">U</div>
                 <span id="username">Guest</span>
@@ -262,31 +357,49 @@
 
     <div class="container">
         <div class="comment-form">
-            <h2>Post a Comment</h2>
+            <h2><i class="fas fa-edit"></i> Post a Comment</h2>
             <div class="form-group">
-                <label for="usernameInput">Username</label>
+                <label for="usernameInput"><i class="fas fa-user"></i> Username</label>
                 <input type="text" id="usernameInput" placeholder="Enter your username">
             </div>
             <div class="form-group">
-                <label for="commentInput">Comment</label>
+                <label for="commentInput"><i class="fas fa-comment"></i> Comment</label>
                 <textarea id="commentInput" placeholder="Enter your comment..."></textarea>
             </div>
-            <button id="submitComment">Post Comment</button>
+            <button id="submitComment">
+                <i class="fas fa-paper-plane"></i> Post Comment
+            </button>
         </div>
 
         <div class="comments-section">
             <div class="comments-header">
-                <span>All Comments</span>
+                <span><i class="fas fa-comments"></i> All Comments</span>
                 <span id="commentsCount">0</span>
             </div>
             <div class="comments-list" id="commentsList">
                 <!-- Comments will be dynamically added here -->
             </div>
         </div>
+
+        <div class="github-info">
+            <h3><i class="fab fa-github"></i> How to View Your GitHub Pages URL</h3>
+            <ol>
+                <li>Go to your GitHub repository</li>
+                <li>Click on the <strong>"Settings"</strong> tab</li>
+                <li>Scroll down to the <strong>"Pages"</strong> section in the left sidebar</li>
+                <li>Under "Source", select <strong>"Deploy from a branch"</strong></li>
+                <li>Select the <strong>"main"</strong> branch and <strong>"/ (root)"</strong> folder</li>
+                <li>Click <strong>"Save"</strong></li>
+                <li>Wait a few minutes, then refresh the page</li>
+                <li>Your site URL will appear at the top of the Pages section</li>
+            </ol>
+            <p>Your URL will look like this:</p>
+            <div class="url-box">https://[your-username].github.io/[repository-name]</div>
+        </div>
     </div>
 
     <div class="notification" id="notification">
-        Comment posted successfully!
+        <i class="fas fa-check-circle"></i> Comment posted successfully!
     </div>
 
     <script>
@@ -295,7 +408,7 @@
             {
                 id: 1,
                 author: "John",
-                content: "This website design is really nice, clean and intuitive!",
+                content: "This website design is really nice, clean and intuitive! I love the color scheme and how easy it is to navigate.",
                 timestamp: new Date('2023-10-15T14:30:00'),
                 likes: 5,
                 dislikes: 1,
@@ -303,7 +416,7 @@
                     {
                         id: 101,
                         author: "Sarah",
-                        content: "I agree, the user experience is great!",
+                        content: "I agree, the user experience is great! The comment system works smoothly.",
                         timestamp: new Date('2023-10-15T15:00:00')
                     }
                 ]
@@ -311,9 +424,18 @@
             {
                 id: 2,
                 author: "TechEnthusiast",
-                content: "Hope to see more features in the future, like image upload and @mention functionality.",
+                content: "Hope to see more features in the future, like image upload and @mention functionality. Great work so far!",
                 timestamp: new Date('2023-10-16T09:15:00'),
                 likes: 3,
+                dislikes: 0,
+                replies: []
+            },
+            {
+                id: 3,
+                author: "DesignerPro",
+                content: "The responsive design works perfectly on my mobile device. The animations are smooth and not overwhelming.",
+                timestamp: new Date('2023-10-17T16:45:00'),
+                likes: 7,
                 dislikes: 0,
                 replies: []
             }
@@ -349,6 +471,11 @@
             // Sort comments by time (newest first)
             const sortedComments = [...comments].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
             
+            if (sortedComments.length === 0) {
+                commentsList.innerHTML = '<p style="text-align: center; padding: 20px; color: #666;">No comments yet. Be the first to comment!</p>';
+                return;
+            }
+            
             sortedComments.forEach(comment => {
                 const commentElement = createCommentElement(comment);
                 commentsList.appendChild(commentElement);
@@ -366,19 +493,21 @@
             
             commentDiv.innerHTML = `
                 <div class="comment-header">
-                    <span class="comment-author">${comment.author}</span>
+                    <div class="comment-author">
+                        <i class="fas fa-user-circle"></i> ${comment.author}
+                    </div>
                     <span class="comment-time">${formattedTime}</span>
                 </div>
                 <div class="comment-content">${comment.content}</div>
                 <div class="comment-actions">
-                    <button class="action-btn like-btn ${comment.liked ? 'active' : ''}" data-id="${comment.id}">
-                        <span>👍</span> <span class="like-count">${comment.likes}</span>
+                    <button class="action-btn like-btn" data-id="${comment.id}">
+                        <i class="fas fa-thumbs-up"></i> <span class="like-count">${comment.likes}</span>
                     </button>
-                    <button class="action-btn dislike-btn ${comment.disliked ? 'active' : ''}" data-id="${comment.id}">
-                        <span>👎</span> <span class="dislike-count">${comment.dislikes}</span>
+                    <button class="action-btn dislike-btn" data-id="${comment.id}">
+                        <i class="fas fa-thumbs-down"></i> <span class="dislike-count">${comment.dislikes}</span>
                     </button>
                     <button class="action-btn reply-btn" data-id="${comment.id}">
-                        Reply
+                        <i class="fas fa-reply"></i> Reply
                     </button>
                 </div>
                 <div class="replies">
@@ -391,7 +520,9 @@
                     <div class="form-group">
                         <textarea class="reply-content" placeholder="Reply content..."></textarea>
                     </div>
-                    <button class="submit-reply" data-id="${comment.id}">Submit Reply</button>
+                    <button class="submit-reply" data-id="${comment.id}">
+                        <i class="fas fa-paper-plane"></i> Submit Reply
+                    </button>
                 </div>
             `;
             
@@ -416,7 +547,9 @@
             return `
                 <div class="comment reply">
                     <div class="comment-header">
-                        <span class="comment-author">${reply.author}</span>
+                        <div class="comment-author">
+                            <i class="fas fa-user-circle"></i> ${reply.author}
+                        </div>
                         <span class="comment-time">${formattedTime}</span>
                     </div>
                     <div class="comment-content">${reply.content}</div>
@@ -433,9 +566,11 @@
             if (diffInSeconds < 60) {
                 return 'Just now';
             } else if (diffInSeconds < 3600) {
-                return `${Math.floor(diffInSeconds / 60)} minutes ago`;
+                const minutes = Math.floor(diffInSeconds / 60);
+                return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
             } else if (diffInSeconds < 86400) {
-                return `${Math.floor(diffInSeconds / 3600)} hours ago`;
+                const hours = Math.floor(diffInSeconds / 3600);
+                return `${hours} hour${hours > 1 ? 's' : ''} ago`;
             } else {
                 return commentTime.toLocaleDateString();
             }
@@ -460,9 +595,9 @@
         function handleLike(commentId) {
             const comment = comments.find(c => c.id === commentId);
             if (comment) {
-                // Simple implementation - in real app would need user verification
                 comment.likes++;
                 renderComments();
+                showNotification('Liked the comment!');
             }
         }
 
@@ -470,9 +605,9 @@
         function handleDislike(commentId) {
             const comment = comments.find(c => c.id === commentId);
             if (comment) {
-                // Simple implementation - in real app would need user verification
                 comment.dislikes++;
                 renderComments();
+                showNotification('Disliked the comment!');
             }
         }
 
